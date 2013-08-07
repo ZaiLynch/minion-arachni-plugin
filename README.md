@@ -1,6 +1,8 @@
 Minion Arachni Plugin
 ===================
 
+**Pre-alpha**
+
 This is a plugin for Minion that executes the Arachni tool. It assumes Arachni is installed on your system and that is is on the system PATH. 
 
 Arachni is a free and open source web application security scanner framework.
