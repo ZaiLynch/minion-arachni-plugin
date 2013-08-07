@@ -5,6 +5,7 @@
 
 
 import json
+import time
 from minion.plugins.base import ExternalProcessPlugin
 
 
@@ -38,9 +39,12 @@ class ArachniPlugin(ExternalProcessPlugin):
     PLUGIN_VERSION = "0.1"
     ARACHNI_NAME = "arachni"
 
+    output_file = ""
+
 
     def do_start(self):
         arachni_path = self.locate_program(self.ARACHNI_NAME)
+        ArachniPlugin.output_file = "arachni." + time.strftime("%Y-%m-%d_%H-%M-%S") + ".json"
         if arachni_path is None:
             raise Exception("Cannot find arachni in path")
         self.arachni_stdout = ""
@@ -49,7 +53,7 @@ class ArachniPlugin(ExternalProcessPlugin):
         args = []
         # TODO: Add good default option / load options from user input
         # https://github.com/Arachni/arachni/wiki/Command-line-user-interface
-        args += ["--report=json:outfile=arachni.report.json"]
+        args += ["--report=json:outfile=" + ArachniPlugin.output_file]
         args += [target]
         self.spawn(arachni_path, args)
 
@@ -67,8 +71,8 @@ class ArachniPlugin(ExternalProcessPlugin):
                 f.write(self.arachni_stdout)
             with open("arachni.stderr.txt", "w") as f:
                 f.write(self.arachni_stderr)
-            self.report_artifacts("Arachni Output", ["arachni.stdout.txt", "arachni.stderr.txt", "arachni.report.json"])
-            issues = parse_arachni_output("arachni.report.json")
+            self.report_artifacts("Arachni Output", ["arachni.stdout.txt", "arachni.stderr.txt", ArachniPlugin.output_file])
+            issues = parse_arachni_output(ArachniPlugin.output_file)
             self.report_issues(issues)
             self.report_finish()
         else:
