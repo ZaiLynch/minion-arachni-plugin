@@ -23,7 +23,7 @@ def parse_arachni_output(output_file):
     for issue in data["issues"]:
         issues.append({"Summary": issue["name"], 
             "Severity": _minion_severity(issue["severity"]),
-            "URL" = issue["url"]})
+            "URL": issue["url"]})
             # TODO: Add more info from Arachni output file
             # Sample file: 
             # https://github.com/Arachni/arachni/blob/master/spec/support/fixtures/auditstore.afr?raw=true
